@@ -8,7 +8,7 @@ INJECTED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml:1:1-9:12
 INJECTED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml:1:1-9:12
 INJECTED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml:1:1-9:12
 	package
-		ADDED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml:2:5-30
+		ADDED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml:2:5-29
 		INJECTED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml
 		INJECTED from E:\project\BleTest\SunBleLib\src\main\AndroidManifest.xml
 	android:versionName

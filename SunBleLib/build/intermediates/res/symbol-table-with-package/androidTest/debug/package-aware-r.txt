@@ -1,1 +1,1 @@
-com.clj.fastble.test
+com.clj.sunble.test

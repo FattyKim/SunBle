@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.clj.fastble"
+    package="com.clj.sunble"
     android:versionCode="232"
     android:versionName="2.3.2" >
 

@@ -10,8 +10,8 @@
         android:name="android.test.InstrumentationTestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:label="Tests for com.clj.fastble.test"
-        android:targetPackage="com.clj.fastble.test" />
+        android:label="Tests for com.clj.sunble.test"
+        android:targetPackage="com.clj.sunble.test" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

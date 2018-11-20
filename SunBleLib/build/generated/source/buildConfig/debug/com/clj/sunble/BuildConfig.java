@@ -5,7 +5,7 @@ package com.clj.sunble;
 
 public final class BuildConfig {
   public static final boolean DEBUG = Boolean.parseBoolean("true");
-  public static final String APPLICATION_ID = "com.clj.fastble";
+  public static final String APPLICATION_ID = "com.clj.sunble";
   public static final String BUILD_TYPE = "debug";
   public static final String FLAVOR = "";
   public static final int VERSION_CODE = 232;

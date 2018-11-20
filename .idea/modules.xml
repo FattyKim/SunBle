@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BleTest.iml" filepath="$PROJECT_DIR$/BleTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SunBleLib/FastBleLib.iml" filepath="$PROJECT_DIR$/SunBleLib/FastBleLib.iml" />
+      <module fileurl="file://E:\project\BleTest\SunBleLib\FastBleLib.iml" filepath="E:\project\BleTest\SunBleLib\FastBleLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SunBleLib/SunBleLib.iml" filepath="$PROJECT_DIR$/SunBleLib/SunBleLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
