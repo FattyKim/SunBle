@@ -34,3 +34,6 @@ SunBleLib/build/intermediates/res/merged/
 SunBleLib/build/intermediates/rs/
 SunBleLib/build/intermediates/tmp/
 app/libs/
+/SunBleLib/build
+
+/.gitignore
