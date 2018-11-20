@@ -10,16 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleGattCallback;
-import com.clj.fastble.callback.BleNotifyCallback;
-import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.exception.BleException;
+import com.clj.sunble.BleManager;
+import com.clj.sunble.BlueToothUtils;
+import com.clj.sunble.callback.BleConnectNotifyImp;
+import com.clj.sunble.callback.BleGattCallback;
+import com.clj.sunble.callback.BleNotifyCallback;
+import com.clj.sunble.data.BleDevice;
+import com.clj.sunble.exception.BleException;
 import com.example.sonice1024.bletest.databinding.ActivityMainBinding;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding bind;
@@ -30,28 +33,74 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bind = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        BleManager.getInstance().init(getApplication());
-        BleManager.getInstance()
-                .enableLog(true)
-                .setReConnectCount(1, 3000)
-                .setOperateTimeout(5000);
+
+        initTest("a", "b", "c");
 
     }
+
+    private void initTest(String... args) {
+        BlueToothUtils.getInstance().applicationInit(getApplication());
+        BlueToothUtils.getInstance().connect(new BleConnectNotifyImp() {
+            @Override
+            public void onNotifyStatus(boolean b, String uuid) {
+
+            }
+
+            @Override
+            public void onNotifyData(String data, String uuid) {
+
+            }
+
+            @Override
+            public void onConnectStatus(int status, String mac, String name) {
+
+            }
+        }, args);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BlueToothUtils.getInstance().missAllConnect();
+    }
+
+    //        BleManager.getInstance().init(getApplication());
+//        BleManager.getInstance()
+//                .enableLog(true)
+//                .setReConnectCount(1, 3000)
+//                .setOperateTimeout(5000);
+
+
+//        if (aBoolean) {
+//        Toast.makeText(MainActivity.this, "同意权限 ", Toast.LENGTH_SHORT).show();
+////                                connect(address);
+//        return address;
+//    } else {
+//        Toast.makeText(MainActivity.this, "拒绝权限", Toast.LENGTH_SHORT).show();
+//        return null;
+//    }
 
     public void showPermission(final String address) {
         if (Build.VERSION.SDK_INT >= 23) {
             RxPermissions rxPermissions = new RxPermissions(this);
             // 添加所需权限
             rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                    .subscribe(new Consumer<Boolean>() {
+                    .map(new Function<Boolean, String>() {
                         @Override
-                        public void accept(Boolean aBoolean) throws Exception {
+                        public String apply(Boolean aBoolean) throws Exception {
                             if (aBoolean) {
                                 Toast.makeText(MainActivity.this, "同意权限 ", Toast.LENGTH_SHORT).show();
-                                connect(address);
+                                return address;
                             } else {
                                 Toast.makeText(MainActivity.this, "拒绝权限", Toast.LENGTH_SHORT).show();
+                                return null;
                             }
+                        }
+                    })
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            connect(s);
                         }
                     });
         } else {
@@ -59,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     public void connectBle(View v) {
         showPermission("CC:78:AB:A2:55:AD");
@@ -153,10 +206,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        count = 0;
-        BleManager.getInstance().disconnect(mBleDevice);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        count = 0;
+//        BleManager.getInstance().disconnect(mBleDevice);
+//    }
 }
