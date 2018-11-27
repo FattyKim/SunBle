@@ -9,24 +9,13 @@
             type="String" />
 
         <variable
-            name="statusHeart"
+            name="statusData"
             type="String" />
 
         <variable
-            name="statusPower"
+            name="dataValue"
             type="String" />
 
-        <variable
-            name="heartValue"
-            type="String" />
-
-        <variable
-            name="heartCount"
-            type="String" />
-
-        <variable
-            name="powerValue"
-            type="String" />
     </data>
 
     <LinearLayout
@@ -36,83 +25,80 @@
         android:orientation="vertical"
         android:paddingLeft="10dp">
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:background="#fa1753"
+                android:onClick="connectBle"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="点击连接上一次"
+                android:textColor="#FFF" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:background="#fa1753"
+                android:onClick="scan"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="扫描"
+                android:textColor="#FFF" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:text='@{status ?? status}'
             android:textColor="#fff"
-            tools:text="连接成功啦~!" />
+            tools:text="蓝牙连接成功啦~!" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            android:background="#fa1753"
-            android:onClick="connectBle"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="点击连接CC:78:AB:A2:55:AD"
-            android:textColor="#FFF" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="心跳notify:"
-            android:textColor="#fff" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="25dp"
-            android:layout_marginBottom="10dp"
-            android:text='@{statusHeart ?? statusHeart}'
+            android:text='@{statusData ?? statusData}'
             android:textColor="#fff"
-            tools:text="连接成功啦~!" />
+            tools:text="notify成功啦~!" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="电量notify:"
-            android:textColor="#fff" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:text='@{statusPower ?? statusPower}'
-            android:textColor="#fff"
-            tools:text="连接成功啦~!" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
             android:text="接收到的数据"
             android:textColor="#fff" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{@string/heart_value+heartValue??heartValue}'
+            android:text='@{@string/data_value+dataValue??dataValue}'
             android:textColor="#fff"
-            tools:text="心率值:" />
+            tools:text="数据值:" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{@string/heart_count+heartCount??heartCount}'
-            android:textColor="#fff"
-            tools:text="心率计数:" />
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:text="点击连接"
+            android:textColor="#fff" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{@string/power_value+powerValue??powerValue}'
-            android:textColor="#fff"
-            tools:text="电量:" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>

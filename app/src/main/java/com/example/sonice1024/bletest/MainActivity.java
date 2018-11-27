@@ -1,215 +1,189 @@
 package com.example.sonice1024.bletest;
 
-import android.Manifest;
 import android.bluetooth.BluetoothGatt;
 import android.databinding.DataBindingUtil;
-import android.os.Build;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.clj.sunble.BleManager;
-import com.clj.sunble.BlueToothUtils;
 import com.clj.sunble.callback.BleConnectNotifyImp;
-import com.clj.sunble.callback.BleGattCallback;
 import com.clj.sunble.callback.BleNotifyCallback;
+import com.clj.sunble.callback.BleScanCallback;
+import com.clj.sunble.callback.BleWriteCallback;
 import com.clj.sunble.data.BleDevice;
 import com.clj.sunble.exception.BleException;
+import com.clj.sunble.scan.BleScanRuleConfig;
 import com.example.sonice1024.bletest.databinding.ActivityMainBinding;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
-
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding bind;
-    private BleDevice mBleDevice;
-    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bind = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
-        initTest("a", "b", "c");
-
-    }
-
-    private void initTest(String... args) {
-        BlueToothUtils.getInstance().applicationInit(getApplication());
-        BlueToothUtils.getInstance().connect(new BleConnectNotifyImp() {
-            @Override
-            public void onNotifyStatus(boolean b, String uuid) {
-
-            }
-
-            @Override
-            public void onNotifyData(String data, String uuid) {
-
-            }
-
-            @Override
-            public void onConnectStatus(int status, String mac, String name) {
-
-            }
-        }, args);
     }
 
     @Override
     protected void onDestroy() {
+        BleManager.getInstance().disconnectAllDevice();
         super.onDestroy();
-        BlueToothUtils.getInstance().missAllConnect();
-    }
-
-    //        BleManager.getInstance().init(getApplication());
-//        BleManager.getInstance()
-//                .enableLog(true)
-//                .setReConnectCount(1, 3000)
-//                .setOperateTimeout(5000);
-
-
-//        if (aBoolean) {
-//        Toast.makeText(MainActivity.this, "同意权限 ", Toast.LENGTH_SHORT).show();
-////                                connect(address);
-//        return address;
-//    } else {
-//        Toast.makeText(MainActivity.this, "拒绝权限", Toast.LENGTH_SHORT).show();
-//        return null;
-//    }
-
-    public void showPermission(final String address) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            RxPermissions rxPermissions = new RxPermissions(this);
-            // 添加所需权限
-            rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                    .map(new Function<Boolean, String>() {
-                        @Override
-                        public String apply(Boolean aBoolean) throws Exception {
-                            if (aBoolean) {
-                                Toast.makeText(MainActivity.this, "同意权限 ", Toast.LENGTH_SHORT).show();
-                                return address;
-                            } else {
-                                Toast.makeText(MainActivity.this, "拒绝权限", Toast.LENGTH_SHORT).show();
-                                return null;
-                            }
-                        }
-                    })
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                            connect(s);
-                        }
-                    });
-        } else {
-            connect(address);
-        }
     }
 
     @Override
     public void onBackPressed() {
+        BleManager.getInstance().disconnectAllDevice();
         super.onBackPressed();
     }
 
-    public void connectBle(View v) {
-        showPermission("CC:78:AB:A2:55:AD");
-    }
-
-
-    private void connect(String s) {
-
-        BleManager.getInstance().connect(s, new BleGattCallback() {
+    private void connect(String value) {
+        BleManager.getInstance().disconnectAllDevice();
+        BleManager.getInstance().startConnect(value, new BleConnectNotifyImp() {
             @Override
-            public void onStartConnect() {
+            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
+                bind.setStatus("连接成功啦~~" + bleDevice.getMac());
+                initNotify(bleDevice);
             }
 
             @Override
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
-                bind.setStatus("连接失败啦~!");
+                bind.setStatus("连接失败啦~~" + bleDevice.getMac());
             }
 
             @Override
-            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                mBleDevice = bleDevice;
-                initNotify(bleDevice);
-                bind.setStatus("连接成功啦~!");
-            }
-
-            @Override
-            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                bind.setStatus("连接中断啦~!");
+            public void onConnectDis(boolean isActiveDisConnected, BleDevice device, BluetoothGatt gatt, int status) {
+                bind.setStatus("连接中断啦~~" + device.getMac());
             }
         });
     }
 
+    public void connectBle(View v) {
+        String value = BleManager.getInstance().getSpMac();
+        if (!TextUtils.isEmpty(value))
+            connect(value);
+
+    }
+
+    public void scan(View v) {
+        if (!BleManager.getInstance().isBlueEnable())
+            return;
+        BleManager.getInstance().disconnectAllDevice();
+        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
+                .setScanTimeOut(5000)              // 扫描超时时间，可选，默认10秒
+                .build();
+        BleManager.getInstance().initScanRule(scanRuleConfig);
+        BleManager.getInstance().scan(new BleScanCallback() {
+            @Override
+            public void onScanStarted(boolean success) {
+            }
+
+            @Override
+            public void onLeScan(BleDevice bleDevice) {
+            }
+
+            @Override
+            public void onScanning(BleDevice bleDevice) {
+            }
+
+            @Override
+            public void onScanFinished(List<BleDevice> scanResultList) {
+
+                //创建布局管理
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                bind.recyclerView.setLayoutManager(layoutManager);
+
+                //创建适配器
+                MyAdapter adapter = new MyAdapter(R.layout.item, scanResultList);
+                adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                        List<BleDevice> list = adapter.getData();
+                        connect(list.get(position).getMac());
+                    }
+                });
+                //给RecyclerView设置适配器
+                bind.recyclerView.setAdapter(adapter);
+
+            }
+        });
+    }
 
     private void initNotify(final BleDevice bleDevice) {
 
         BleManager.getInstance().notify(
                 bleDevice,
-                "0000180D-0000-1000-8000-00805f9b34fb",
-                "00002A37-0000-1000-8000-00805f9b34fb",
+                "0000ffe0-0000-1000-8000-00805f9b34fb",
+                "0000ffe1-0000-1000-8000-00805f9b34fb",
                 new BleNotifyCallback() {
                     @Override
                     public void onNotifySuccess() {
                         // 打开通知操作成功
-                        bind.setStatusHeart("打开心率通知操作成功");
-                        notifyPower(bleDevice);
+                        bind.setStatusData("打开通知操作成功");
+                        initWrite(bleDevice);
                     }
+
 
                     @Override
                     public void onNotifyFailure(BleException exception) {
                         // 打开通知操作失败
-                        bind.setStatusHeart("打开心率通知操作失败");
+                        bind.setStatusData("打开通知操作失败");
                     }
 
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现
-                        count++;
-                        bind.setHeartCount(count + "");
-                        bind.setHeartValue(HexStrToBytesUtils.bytesToHexString(data));
+                        bind.setDataValue(HexStrToBytesUtils.bytesToHexString(data));
                     }
                 });
-
-
     }
 
-    private void notifyPower(final BleDevice bleDevice) {
-
-        BleManager.getInstance().notify(
+    private void initWrite(BleDevice bleDevice) {
+        BleManager.getInstance().write(
                 bleDevice,
-                "0000180F-0000-1000-8000-00805f9b34fb",
-                "00002A19-0000-1000-8000-00805f9b34fb",
-                new BleNotifyCallback() {
+                "0000ffe0-0000-1000-8000-00805f9b34fb",
+                "0000ffe1-0000-1000-8000-00805f9b34fb",
+                "UIH".getBytes(),
+                new BleWriteCallback() {
                     @Override
-                    public void onNotifySuccess() {
-                        // 打开通知操作成功
-                        bind.setStatusPower("打开电量通知操作成功");
+                    public void onWriteSuccess(int current, int total, byte[] justWrite) {
+                        // 发送数据到设备成功（分包发送的情况下，可以通过方法中返回的参数可以查看发送进度）
+                        Log.d("sunling","success");
                     }
 
                     @Override
-                    public void onNotifyFailure(BleException exception) {
-                        // 打开通知操作失败
-                        bind.setStatusPower("打开心率通知操作失败");
-                        Log.d("MainActivity", exception.getDescription());
-                    }
-
-                    @Override
-                    public void onCharacteristicChanged(byte[] data) {
-                        // 打开通知后，设备发过来的数据将在这里出现
-                        bind.setPowerValue(HexStrToBytesUtils.bytesToHexString(data));
+                    public void onWriteFailure(BleException exception) {
+                        // 发送数据到设备失败
                     }
                 });
     }
 
+    public class MyAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        count = 0;
-//        BleManager.getInstance().disconnect(mBleDevice);
-//    }
+        public MyAdapter(@LayoutRes int layoutResId, @Nullable List<BleDevice> data) {
+            super(layoutResId, data);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, BleDevice item) {
+            //可链式调用赋值
+            helper.setText(R.id.name, item.getName())
+                    .setText(R.id.address, item.getMac());
+            //获取当前条目position
+            //int position = helper.getLayoutPosition();
+        }
+    }
+
+
 }
