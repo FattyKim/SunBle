@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -76,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scan(View v) {
+
+
         if (!BleManager.getInstance().isBlueEnable())
             return;
         BleManager.getInstance().disconnectAllDevice();
@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
+
 
                 //创建布局管理
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
@@ -159,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onWriteSuccess(int current, int total, byte[] justWrite) {
                         // 发送数据到设备成功（分包发送的情况下，可以通过方法中返回的参数可以查看发送进度）
-                        Log.d("sunling","success");
                     }
 
                     @Override
