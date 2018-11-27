@@ -1,4 +1,4 @@
-# Explain<br>
+# EXPLAIN<br>
 ### STEP 1
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/start.png)<br>
 ### STEP 2
@@ -22,4 +22,9 @@
 #### write and read data
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/6.png)<br>
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/7.png)<br>
-
+### STEP 8
+#### disconnect
+![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/8.png)<br>
+or<br>
+![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/9.png)<br>
+# END<br>
