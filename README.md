@@ -23,7 +23,7 @@
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/6.png)<br>
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/7.png)<br>
 ### STEP 8
-#### disconnect
+#### disconnect bluetooth
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/8.png)<br>
 or<br>
 ![Image text](https://raw.githubusercontent.com/FattyKim/SunBle/master/image/9.png)<br>
